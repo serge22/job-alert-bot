@@ -78,3 +78,6 @@ COPY --from=build-frontend --chown=www-data:www-data /app ./
 EXPOSE 80
 
 ENTRYPOINT ["/init"]
+
+CMD []
+STOPSIGNAL SIGTERM
