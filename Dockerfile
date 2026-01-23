@@ -65,7 +65,7 @@ RUN apt-get update \
 WORKDIR /var/www/html
 
 # Copy config files first (these change less frequently)
-COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY docker/s6-rc.d /etc/s6-overlay/s6-rc.d/
 
