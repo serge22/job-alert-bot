@@ -1,7 +1,7 @@
 # ============================================
 # 1. Backend build (Composer)
 # ============================================
-FROM composer:2.7 AS build-backend
+FROM composer:2.9 AS build-backend
 WORKDIR /app
 
 # Copy only dependency files first
