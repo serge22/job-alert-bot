@@ -21,7 +21,13 @@ class TelegramNotificationService
                 Keyboard::inlineButton([
                     'text' => 'Open job',
                     'url' => 'https://www.upwork.com/jobs/' . $job->ciphertext,
-                ])
+                ]),
+                Keyboard::inlineButton([
+                    'text' => 'Cover letter',
+                    'web_app' => [
+                        'url' => url("job/{$job->id}/cover-letter"),
+                    ],
+                ]),
             ]);
 
         $params = [

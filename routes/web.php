@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Services\UpworkProvider;
 use App\Services\UpworkService;
 use App\Http\Controllers\FeedController;
+use App\Http\Controllers\JobController;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 Route::get('/', function () {
@@ -14,6 +15,8 @@ Route::get('/', function () {
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('job/{id}/cover-letter', [JobController::class, 'coverLetter'])->middleware(['auth']);
 
 // Feed Routes
 Route::middleware(['auth'])->group(function () {

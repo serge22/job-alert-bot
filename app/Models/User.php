@@ -55,4 +55,35 @@ class User extends Authenticatable
     {
         return $this->hasMany(Feed::class);
     }
+
+    /**
+     * Get the settings that belong to the user.
+     */
+    public function settings(): HasMany
+    {
+        return $this->hasMany(UserSetting::class);
+    }
+
+    /**
+     * Get a user setting value by key.
+     */
+    public function getSetting(string $key, mixed $default = null): mixed
+    {
+        $value = $this->settings()
+            ->where('key', $key)
+            ->value('value');
+
+        return $value ?? $default;
+    }
+
+    /**
+     * Set a user setting value by key.
+     */
+    public function setSetting(string $key, mixed $value): void
+    {
+        $this->settings()->updateOrCreate(
+            ['key' => $key],
+            ['value' => $value],
+        );
+    }
 }
