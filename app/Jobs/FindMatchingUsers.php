@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\Feed;
 use App\Models\UpworkJob;
-use App\Models\User;
 use App\Services\TelegramNotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;

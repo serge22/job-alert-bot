@@ -38,7 +38,7 @@ class Feed extends Model
 
         // Check if job matches selected categories (if any categories are selected)
         if ($this->categories()->count() > 0) {
-            $feedCategoryIds = $this->categories()->pluck('id')->toArray();
+            $feedCategoryIds = $this->categories()->pluck('feed_categories.id')->toArray();
             if (!in_array($job->upwork_category_id, $feedCategoryIds)) {
                 return false;
             }
