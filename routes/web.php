@@ -34,8 +34,26 @@ Route::get('/oauth/upwork', function () {
     return redirect($authorizationUrl);
 });
 
+/**
+ * Register the Telegram bot webhook URL with Telegram's API.
+ *
+ * This endpoint must be visited once (or whenever APP_URL changes) to tell
+ * Telegram where to deliver incoming updates. It constructs the webhook URL
+ * from the bot token and the application base URL, then calls setWebhook()
+ * to register it.
+ *
+ * Webhook URL format: {APP_URL}/{TELEGRAM_BOT_TOKEN}/webhook
+ *
+ * @see https://core.telegram.org/bots/api#setwebhook
+ */
+Route::get('setup', function () {
+    $url = url(config('telegram.bots.mybot.token') . '/webhook');
+    Telegram::setWebhook(['url' => $url]);
+    return 'ok';
+});
+
 Route::post(config('telegram.bots.mybot.token') . '/webhook', function () {
-    $update = Telegram::commandsHandler(true);
+    Telegram::commandsHandler(true);
 
     return 'ok';
 });

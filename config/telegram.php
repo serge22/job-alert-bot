@@ -1,6 +1,7 @@
 <?php
 
 use Telegram\Bot\Commands\HelpCommand;
+use App\Telegram\Commands\StartCommand;
 
 return [
     /*
@@ -41,6 +42,7 @@ return [
              */
             'allowed_updates' => null,
             'commands' => [
+                StartCommand::class,
                 // Acme\Project\Commands\MyTelegramBot\BotCommand::class
             ],
         ],
