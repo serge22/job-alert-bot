@@ -37,11 +37,9 @@ class Feed extends Model
         }
 
         // Check if job matches selected categories (if any categories are selected)
-        if ($this->categories()->count() > 0) {
-            $feedCategoryIds = $this->categories()->allRelatedIds()->all();
-            if (!in_array($job->upwork_category_id, $feedCategoryIds)) {
-                return false;
-            }
+        $categories = $this->categories()->allRelatedIds()->all();
+        if ($categories && ! in_array($job->upwork_category_id, $categories)) {
+            return false;
         }
 
         // If no search rules defined, match all jobs (that pass category filter)
