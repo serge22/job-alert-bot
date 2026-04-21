@@ -158,7 +158,6 @@ fragment MarketplaceJobpostingSearchEdgeFragment on MarketplaceJobpostingSearchE
     clientNotSureFields
     clientPrivateFields
     applied
-    createdDateTime
     publishedDateTime
     renewedDateTime
     client {
@@ -227,7 +226,7 @@ fragment MarketplaceJobpostingSearchEdgeFragment on MarketplaceJobpostingSearchE
 
         } catch (\Exception $e) {
             Log::error('Upwork API Error: ' . $e->getMessage());
-            throw $e;
+            return [];
         }
     }
 
