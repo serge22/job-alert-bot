@@ -115,11 +115,11 @@ class TelegramNotificationService
         $aboutClient = [];
 
         if ($job->client_feedback) {
-            $aboutClient[] = "&#11088; " . floatval($job->client_feedback);
+            $aboutClient[] = "&#11088; " . round($job->client_feedback, 1);
         }
 
         if ($job->client_reviews) {
-            $aboutClient[] = intval($job->client_reviews) . " reviews";
+            $aboutClient[] = $job->client_reviews . " reviews";
         }
 
         if ($job->client_country) {
@@ -127,7 +127,11 @@ class TelegramNotificationService
         }
 
         if ($job->client_jobs) {
-            $aboutClient[] = intval($job->client_jobs) . " jobs";
+            $aboutClient[] = $job->client_jobs . " jobs";
+        }
+
+        if ($job->client_hires) {
+            $aboutClient[] = $job->client_hires . " hires";
         }
 
         if ($job->client_spent) {
