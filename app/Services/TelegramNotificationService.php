@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\UpworkJob;
 use App\Models\Feed;
-use Illuminate\Support\Number;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
@@ -135,7 +134,7 @@ class TelegramNotificationService
         }
 
         if ($job->client_spent) {
-            $aboutClient[] = "Spent &#36;" . Number::abbreviate($job->client_spent);
+            $aboutClient[] = "Spent &#36;" . $this->abbreviateNumber($job->client_spent);
         }
 
         if ($job->client_verified) {
@@ -148,5 +147,47 @@ class TelegramNotificationService
         }
 
         return $out;
+    }
+
+    /**
+     * Format a numeric value into a compact, metric-suffixed string.
+     *
+     * This is a lightweight replacement for `Number::abbreviate()` so the service
+     * does not depend on the `intl` extension.
+     *
+     * Conversion rules:
+     * - `>= 1_000_000_000` -> billions (`B`)
+     * - `>= 1_000_000`     -> millions (`M`)
+     * - `>= 1_000`         -> thousands (`K`)
+     * - `< 1_000`          -> returned as a plain numeric string
+     *
+     * Behavior notes:
+     * - Uses `abs($number)` only for threshold selection; the original sign is preserved.
+     * - `number_format()` is used for rounding/formatting, so output may include trailing
+     *   zeros when `$precision > 0` (e.g. `1.50K`).
+     * - Current default precision is `0`, so `1_500` becomes `"2K"`.
+     *
+     * @param int|float $number    Numeric value to abbreviate.
+     * @param int       $precision Decimal places used by `number_format()` for abbreviated values.
+     *
+     * @return string Abbreviated representation with `K`, `M`, or `B` suffix when applicable.
+     */
+    private function abbreviateNumber(int|float $number, int $precision = 0): string
+    {
+        $absValue = abs($number);
+
+        if ($absValue >= 1_000_000_000) {
+            return number_format($number / 1_000_000_000, $precision) . 'B';
+        }
+
+        if ($absValue >= 1_000_000) {
+            return number_format($number / 1_000_000, $precision) . 'M';
+        }
+
+        if ($absValue >= 1_000) {
+            return number_format($number / 1_000, $precision) . 'K';
+        }
+
+        return (string) $number;
     }
 }
