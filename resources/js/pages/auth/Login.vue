@@ -1,14 +1,30 @@
 <script setup lang="ts">
+import { Form, Head, router } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
 import InputError from '@/components/InputError.vue';
+import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthBase from '@/layouts/AuthLayout.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
-import { onMounted } from 'vue';
+import { Spinner } from '@/components/ui/spinner';
+import { register } from '@/routes';
+import { store, telegram } from '@/routes/login';
+import { request } from '@/routes/password';
+
+defineOptions({
+    layout: {
+        title: 'Log in to your account',
+        description: 'Enter your email and password below to log in',
+    },
+});
+
+defineProps<{
+    status?: string;
+    canResetPassword: boolean;
+    canRegister: boolean;
+}>();
 
 declare global {
     interface Window {
@@ -27,28 +43,6 @@ declare global {
     }
 }
 
-defineProps<{
-    status?: string;
-    canResetPassword: boolean;
-    errors: Record<string, string>;
-    telegram: {
-        bot: string;
-        redirect: string;
-    };
-}>();
-
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-});
-
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
-
 // Add Telegram Web App script
 onMounted(() => {
     const script = document.createElement('script');
@@ -66,8 +60,11 @@ onMounted(() => {
 
 // handle Telegram auth
 const checkTelegramAuth = () => {
-    if (window.Telegram?.WebApp?.initData && window.Telegram.WebApp.initData.length > 0) {
-        router.post(route('login.telegram'), {
+    if (
+        window.Telegram?.WebApp?.initData &&
+        window.Telegram.WebApp.initData.length > 0
+    ) {
+        router.post(telegram.url(), {
             telegramData: window.Telegram.WebApp.initData,
         });
     } else {
@@ -77,70 +74,85 @@ const checkTelegramAuth = () => {
 </script>
 
 <template>
-    <AuthBase title="Log in to your account" description="Enter your email and password below to log in">
-        <Head title="Log in" />
+    <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
-            {{ status }}
+    <div
+        v-if="status"
+        class="mb-4 text-center text-sm font-medium text-green-600"
+    >
+        {{ status }}
+    </div>
+
+    <Form
+        v-bind="store.form()"
+        :reset-on-success="['password']"
+        v-slot="{ errors, processing }"
+        class="flex flex-col gap-6"
+    >
+        <div class="grid gap-6">
+            <div class="grid gap-2">
+                <Label for="email">Email address</Label>
+                <Input
+                    id="email"
+                    type="email"
+                    name="email"
+                    required
+                    autofocus
+                    :tabindex="1"
+                    autocomplete="email"
+                    placeholder="email@example.com"
+                />
+                <InputError :message="errors.email" />
+            </div>
+
+            <div class="grid gap-2">
+                <div class="flex items-center justify-between">
+                    <Label for="password">Password</Label>
+                    <TextLink
+                        v-if="canResetPassword"
+                        :href="request()"
+                        class="text-sm"
+                        :tabindex="5"
+                    >
+                        Forgot password?
+                    </TextLink>
+                </div>
+                <PasswordInput
+                    id="password"
+                    name="password"
+                    required
+                    :tabindex="2"
+                    autocomplete="current-password"
+                    placeholder="Password"
+                />
+                <InputError :message="errors.password" />
+            </div>
+
+            <div class="flex items-center justify-between">
+                <Label for="remember" class="flex items-center space-x-3">
+                    <Checkbox id="remember" name="remember" :tabindex="3" />
+                    <span>Remember me</span>
+                </Label>
+            </div>
+
+            <Button
+                type="submit"
+                class="mt-4 w-full"
+                :tabindex="4"
+                :disabled="processing"
+                data-test="login-button"
+            >
+                <Spinner v-if="processing" />
+                Log in
+            </Button>
         </div>
 
-        <InputError :message="errors.telegram" />
-
-        <form @submit.prevent="submit" class="flex flex-col gap-6">
-            <div class="grid gap-6">
-                <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        required
-                        autofocus
-                        :tabindex="1"
-                        autocomplete="email"
-                        v-model="form.email"
-                        placeholder="email@example.com"
-                    />
-                    <InputError :message="form.errors.email" />
-                </div>
-
-                <div class="grid gap-2">
-                    <div class="flex items-center justify-between">
-                        <Label for="password">Password</Label>
-                        <TextLink v-if="canResetPassword" :href="route('password.request')" class="text-sm" :tabindex="5">
-                            Forgot password?
-                        </TextLink>
-                    </div>
-                    <Input
-                        id="password"
-                        type="password"
-                        required
-                        :tabindex="2"
-                        autocomplete="current-password"
-                        v-model="form.password"
-                        placeholder="Password"
-                    />
-                    <InputError :message="form.errors.password" />
-                </div>
-
-                <div class="flex items-center justify-between">
-                    <Label for="remember" class="flex items-center space-x-3">
-                        <Checkbox id="remember" v-model="form.remember" :tabindex="3" />
-                        <span>Remember me</span>
-                    </Label>
-                </div>
-
-                <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="form.processing">
-                    <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Log in
-                </Button>
-
-                <!--                <TelegramLoginBtn mode="redirect" :bot-username="telegram.bot" :redirect-url="telegram.redirect" />-->
-            </div>
-
-            <div class="text-center text-sm text-muted-foreground">
-                Don't have an account?
-                <TextLink :href="route('register')" :tabindex="5">Sign up</TextLink>
-            </div>
-        </form>
-    </AuthBase>
+        <div
+            class="text-center text-sm text-muted-foreground"
+            v-if="canRegister"
+        >
+            Don't have an account?
+            <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
+        </div>
+    </Form>
 </template>

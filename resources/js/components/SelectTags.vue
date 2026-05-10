@@ -5,10 +5,23 @@
                 <div class="flex flex-wrap gap-1">
                     <!-- Display tags for selected values -->
                     <template v-if="internalValue.length > 0">
-                        <TagsInput :model-value="internalValue" class="border-0 p-0" :displayValue="getOptionLabel">
-                            <TagsInputItem v-for="value in internalValue" :key="value" :value="value">
-                                <TagsInputItemText>{{ getOptionLabel(value) }}</TagsInputItemText>
-                                <TagsInputItemDelete @pointerdown.stop.prevent @click.stop.prevent="removeValue(value)" />
+                        <TagsInput
+                            :model-value="internalValue"
+                            class="border-0 p-0"
+                            :displayValue="getOptionLabel"
+                        >
+                            <TagsInputItem
+                                v-for="value in internalValue"
+                                :key="value"
+                                :value="value"
+                            >
+                                <TagsInputItemText>{{
+                                    getOptionLabel(value)
+                                }}</TagsInputItemText>
+                                <TagsInputItemDelete
+                                    @pointerdown.stop.prevent
+                                    @click.stop.prevent="removeValue(value)"
+                                />
                             </TagsInputItem>
                         </TagsInput>
                     </template>
@@ -21,7 +34,11 @@
             <SelectContent>
                 <SelectGroup>
                     <SelectLabel v-if="label">{{ label }}</SelectLabel>
-                    <SelectItem v-for="option in options" :key="option.value" :value="option.value">
+                    <SelectItem
+                        v-for="option in options"
+                        :key="option.value"
+                        :value="option.value"
+                    >
                         {{ option.label }}
                     </SelectItem>
                 </SelectGroup>
@@ -31,9 +48,21 @@
 </template>
 
 <script setup lang="ts">
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger } from '@/components/ui/select';
-import { TagsInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from '@/components/ui/tags-input';
 import { computed } from 'vue';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+} from '@/components/ui/select';
+import {
+    TagsInput,
+    TagsInputItem,
+    TagsInputItemDelete,
+    TagsInputItemText,
+} from '@/components/ui/tags-input';
 
 interface Option {
     value: string;
@@ -65,8 +94,9 @@ const internalValue = computed({
 });
 
 // Helper function to get label from value
-const getOptionLabel = (value: string | Record<string, any>) => {
+const getOptionLabel = (value: string | number | bigint | Record<string, any>) => {
     let val: string;
+
     if (typeof value === 'string') {
         val = value;
     } else if (value && typeof value === 'object' && 'value' in value) {
@@ -74,7 +104,9 @@ const getOptionLabel = (value: string | Record<string, any>) => {
     } else {
         val = String(value);
     }
+
     const option = props.options.find((opt) => opt.value === val);
+
     return option?.label || val;
 };
 

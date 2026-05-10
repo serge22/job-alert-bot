@@ -1,0 +1,57 @@
+# VCS
+.git
+.gitignore
+.gitattributes
+
+# Docs / local notes
+README.md
+*.md
+
+# Environment / secrets (do not bake local env into images)
+.env
+.env.*
+!.env.example
+
+# Dependencies (installed inside image stages)
+vendor
+node_modules
+
+# Runtime / cache artifacts
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/debugbar/*
+bootstrap/cache/*.php
+
+# Frontend build artifacts
+public/build
+public/hot
+*.tsbuildinfo
+
+# Tests and dev-only files (optional for prod images)
+tests
+phpunit.xml
+pest.xml
+pest.xml.dist
+
+# IDE/editor
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Docker compose/local dev files not needed for image build
+docker-compose.yml
+
+# Misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
