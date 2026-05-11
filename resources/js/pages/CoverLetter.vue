@@ -5,9 +5,7 @@ import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Toaster } from '@/components/ui/sonner';
 import { Textarea } from '@/components/ui/textarea';
-import AppLayout from '@/layouts/AppLayout.vue';
 
 import 'vue-sonner/style.css';
 
@@ -44,35 +42,32 @@ const copyToClipboard = async () => {
 
 <template>
     <Head title="Cover Letter" />
-    <Toaster />
 
-    <AppLayout>
-        <div v-if="error" class="p-4">
-            <Alert variant="destructive">
-                <AlertCircleIcon />
-                <AlertTitle>
-                    Please set your cover letter prompt and applicant profile in
-                    <a href="/settings/ai" class="underline">AI settings</a>
-                    first.
-                </AlertTitle>
-            </Alert>
+    <div v-if="error" class="p-4">
+        <Alert variant="destructive">
+            <AlertCircleIcon />
+            <AlertTitle>
+                Please set your cover letter prompt and applicant profile in
+                <a href="/settings/ai" class="underline">AI settings</a>
+                first.
+            </AlertTitle>
+        </Alert>
+    </div>
+    <div v-else class="p-4">
+        <p class="mb-3">
+            Copy the prompt below and use it in your preferred AI tool to
+            generate a cover letter.
+        </p>
+        <div class="mb-3">
+            <Button type="button" @click="copyToClipboard">{{
+                copyLabel
+            }}</Button>
         </div>
-        <div v-else class="p-4">
-            <p class="mb-3">
-                Copy the prompt below and use it in your preferred AI tool to
-                generate a cover letter.
-            </p>
-            <div class="mb-3">
-                <Button type="button" @click="copyToClipboard">{{
-                    copyLabel
-                }}</Button>
-            </div>
-            <Textarea
-                :model-value="composedPrompt"
-                rows="20"
-                readonly
-                @click="copyToClipboard"
-            />
-        </div>
-    </AppLayout>
+        <Textarea
+            :model-value="composedPrompt"
+            rows="20"
+            readonly
+            @click="copyToClipboard"
+        />
+    </div>
 </template>

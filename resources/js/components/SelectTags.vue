@@ -94,7 +94,9 @@ const internalValue = computed({
 });
 
 // Helper function to get label from value
-const getOptionLabel = (value: string | number | bigint | Record<string, any>) => {
+const getOptionLabel = (
+    value: string | number | bigint | Record<string, any>,
+) => {
     let val: string;
 
     if (typeof value === 'string') {

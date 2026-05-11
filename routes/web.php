@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\TelegramAuthController;
 use App\Http\Controllers\FeedController;
 use App\Services\UpworkProvider;
@@ -33,6 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return 'ok';
     });
+
+    Route::get('job/{id}/cover-letter', [JobController::class, 'coverLetter']);
 });
 
 Route::post(config('telegram.bots.mybot.token').'/webhook', function () {
