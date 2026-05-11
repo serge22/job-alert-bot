@@ -101,7 +101,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
+            explode(',', (string) env('APP_PREVIOUS_KEYS', '')),
         ),
     ],
 
@@ -122,18 +122,5 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Fetch Jobs Schedule
-    |--------------------------------------------------------------------------
-    |
-    | This value determines how often the Upwork job fetcher runs.
-    | Supported values: everyMinute, everyTwoMinutes, everyFiveMinutes,
-    | everyTenMinutes, everyFifteenMinutes, everyThirtyMinutes, hourly, daily
-    |
-    */
-
-    'fetch_jobs_schedule' => env('FETCH_JOBS_SCHEDULE', 'everyTwoMinutes'),
 
 ];

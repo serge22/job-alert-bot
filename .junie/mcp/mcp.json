@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/usr/local/bin/php",
+            "args": [
+                "/www/job-alert-bot/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
